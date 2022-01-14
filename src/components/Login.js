@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
-import { addUser } from '../redux/actions';
+import { addUser, fetchAPIToken } from '../redux/actions';
 import Button from './Button';
 import Input from './Input';
 
@@ -39,11 +39,13 @@ class Login extends Component {
     }, () => this.verifyEntries());
   }
 
-  submitLogin = () => {
-    const { dispatch } = this.props;
+  submitLogin = async () => {
+    const { dispatch, history } = this.props;
     const { email, name } = this.state;
     dispatch(addUser({ email, name }));
-  };
+    dispatch(await fetchAPIToken());
+    history.push('/game');
+  }
 
   render() {
     const { email, name, disabled } = this.state;
@@ -78,6 +80,9 @@ class Login extends Component {
 
 Login.propTypes = {
   dispatch: PropType.func.isRequired,
+  history: PropType.shape({
+    push: PropType.func.isRequired,
+  }).isRequired,
 };
 
 export default connect()(Login);
