@@ -45,6 +45,11 @@ class Login extends Component {
     dispatch(addUser({ email, name }));
   };
 
+  submitSettings = () => {
+    const { history } = this.props;
+    history.push('/settings');
+  }
+
   render() {
     const { email, name, disabled } = this.state;
     return (
@@ -70,6 +75,11 @@ class Login extends Component {
           test="play"
           disabled={ disabled }
           onClick={ this.submitLogin }
+        />
+        <Button
+          text="Settings"
+          test="settings"
+          onClick={ this.submitSettings }
         />
       </div>
     );

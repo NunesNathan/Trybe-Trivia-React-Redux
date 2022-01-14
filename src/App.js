@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
+import Settings from './pages/Settings';
 
 export default function App() {
   return (
@@ -11,6 +12,11 @@ export default function App() {
         exact
       >
         <Home />
+      </Route>
+      <Route
+        path="/settings"
+      >
+        <Settings />
       </Route>
     </Switch>
   );
