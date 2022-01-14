@@ -1,3 +1,5 @@
+import fetchAPI from '../../services/tokenAPI';
+
 // action types
 
 export const ADD_USER = 'ADD_USER';
@@ -25,3 +27,8 @@ export const getToken = (payload) => ({
   type: GET_TOKEN,
   payload,
 });
+
+export function fetchAPIToken() {
+  return (dispatch) => fetchAPI()
+    .then((result) => dispatch(getToken(result.token)));
+}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
-import { addUser } from '../redux/actions';
+import { addUser, fetchAPIToken } from '../redux/actions';
 import Button from './Button';
 import Input from './Input';
 
@@ -39,10 +39,11 @@ class Login extends Component {
     }, () => this.verifyEntries());
   }
 
-  submitLogin = () => {
+  submitLogin = async () => {
     const { dispatch, history } = this.props;
     const { email, name } = this.state;
     dispatch(addUser({ email, name }));
+    dispatch(await fetchAPIToken());
     history.push('/game');
   }
 
