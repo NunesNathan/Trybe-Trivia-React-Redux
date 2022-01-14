@@ -40,10 +40,11 @@ class Login extends Component {
   }
 
   submitLogin = () => {
-    const { dispatch } = this.props;
+    const { dispatch, history } = this.props;
     const { email, name } = this.state;
     dispatch(addUser({ email, name }));
-  };
+    history.push('/game');
+  }
 
   render() {
     const { email, name, disabled } = this.state;
@@ -78,6 +79,9 @@ class Login extends Component {
 
 Login.propTypes = {
   dispatch: PropType.func.isRequired,
+  history: PropType.shape({
+    push: PropType.func.isRequired,
+  }).isRequired,
 };
 
 export default connect()(Login);

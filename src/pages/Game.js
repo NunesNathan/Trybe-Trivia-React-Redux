@@ -4,7 +4,7 @@ class Game extends Component {
   render() {
     return (
       <div>
-        Trivia
+        Trivia Game
       </div>
     );
   }

@@ -1,14 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Logo from '../components/Logo';
 import Login from '../components/Login';
 
-export default class Home extends Component {
-  render() {
-    return (
-      <main className="App-header">
-        <Logo />
-        <Login />
-      </main>
-    );
-  }
+export default function Home({ history }) {
+  return (
+    <main className="App-header">
+      <Logo />
+      <Login history={ history } />
+    </main>
+  );
 }
+
+Home.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
