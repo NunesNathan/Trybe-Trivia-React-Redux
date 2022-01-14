@@ -1,3 +1,4 @@
+import setLocalStorage from '../../services/localStorage';
 import fetchAPI from '../../services/tokenAPI';
 
 // action types
@@ -29,6 +30,9 @@ export const getToken = (payload) => ({
 });
 
 export function fetchAPIToken() {
-  return (dispatch) => fetchAPI()
-    .then((result) => dispatch(getToken(result.token)));
+  return async (dispatch) => {
+    const result = await fetchAPI();
+    dispatch(getToken(result.token));
+    setLocalStorage('token', result.token);
+  };
 }
