@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropType from 'prop-types';
-import getGravatarUrl from '../helpers/gravatar';
+import getGravatarUrl from '../services/gravatar';
 
 class Header extends Component {
   render() {
