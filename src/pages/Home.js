@@ -4,7 +4,6 @@ import Logo from '../components/Logo';
 import Login from '../components/Login';
 
 export default function Home({ history }) {
-  console.log(history);
   return (
     <main className="App-header">
       <Logo />
