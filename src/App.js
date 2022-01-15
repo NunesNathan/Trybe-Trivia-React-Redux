@@ -11,19 +11,16 @@ export default function App() {
       <Route
         path="/"
         exact
-      >
-        <Home />
-      </Route>
+        component={ Home }
+      />
       <Route
         path="/settings"
-      >
-        <Settings />
-      </Route>
+        component={ Settings }
+      />
       <Route
         path="/game"
-      >
-        <Game />
-      </Route>
+        component={ Game }
+      />
     </Switch>
   );
 }
