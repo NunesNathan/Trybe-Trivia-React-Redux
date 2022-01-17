@@ -28,13 +28,17 @@ export const shuffleOptions = () => {
   }
 };
 
-export function countDown() {
+export function countDown(disabledButtons) {
   const elementeTimer = document.getElementById('count-down-timer');
 
   if (elementeTimer.innerHTML > 0) {
     elementeTimer.innerHTML -= 1;
+  } else {
+    disabledButtons();
   }
 }
 
 const milesimos = 1000;
-export const timerSeconds = () => setInterval(countDown, milesimos);
+export const timerSeconds = (disabledButtons) => setInterval(
+  () => countDown(disabledButtons), milesimos,
+);

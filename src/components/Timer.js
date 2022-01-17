@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-import { timerSeconds } from '../services/events';
 
 export default class Timer extends Component {
-  componentDidMount() {
-    timerSeconds();
-  }
-
   render() {
     return (
       <div>

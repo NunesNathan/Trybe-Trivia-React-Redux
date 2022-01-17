@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchQuestions } from '../services/tokenAPI';
-import { decodeCharacter, shuffleOptions } from '../services/events';
+import { decodeCharacter, shuffleOptions, timerSeconds } from '../services/events';
 import { fetchAPIToken } from '../redux/actions';
 
 class GameScreen extends Component {
@@ -14,11 +14,13 @@ class GameScreen extends Component {
       questionIndex: 0,
       actualQuestion: {},
       haveOptions: false,
+      disabledButton: false,
     };
   }
 
   componentDidMount() {
     this.getQuestions();
+    timerSeconds(this.disabledButtons);
   }
 
   getQuestions = async () => {
@@ -42,31 +44,40 @@ class GameScreen extends Component {
     }, () => shuffleOptions());
   }
 
-  renderOptions = ({ correct_answer: correct, incorrect_answers: incorrect }) => (
-    <div id="options" data-testid="answer-options">
-      <button
-        key={ decodeCharacter(correct) }
-        type="button"
-        data-testid="correct-answer"
-      >
-        {decodeCharacter(correct)}
-      </button>
-      {incorrect.map((each, i) => (
+  disabledButtons = () => {
+    this.setState({ disabledButton: true });
+  }
+
+  renderOptions = ({ correct_answer: correct, incorrect_answers: incorrect }) => {
+    const { disabledButton } = this.state;
+    return (
+      <div id="options" data-testid="answer-options">
         <button
-          key={ decodeCharacter(each) }
+          key={ decodeCharacter(correct) }
           type="button"
-          data-testid={ `wrong-answer-${i}` }
+          disabled={ disabledButton }
+          data-testid="correct-answer"
         >
-          { decodeCharacter(each) }
+          { decodeCharacter(correct) }
         </button>
-      ))}
-    </div>);
+        { incorrect.map((each, i) => (
+          <button
+            key={ decodeCharacter(each) }
+            type="button"
+            disabled={ disabledButton }
+            data-testid={ `wrong-answer-${i}` }
+          >
+            { decodeCharacter(each) }
+          </button>
+        )) }
+      </div>);
+  };
 
   render() {
     const { actualQuestion, haveOptions } = this.state;
     return (
       <main>
-        {!haveOptions
+        { !haveOptions
           ? (<p>Carregando</p>)
           : (
             <div>
@@ -74,10 +85,10 @@ class GameScreen extends Component {
               <p
                 data-testid="question-text"
               >
-                {decodeCharacter(actualQuestion.question)}
+                { decodeCharacter(actualQuestion.question) }
               </p>
               { this.renderOptions(actualQuestion) }
-            </div>)}
+            </div>) }
       </main>
     );
   }
