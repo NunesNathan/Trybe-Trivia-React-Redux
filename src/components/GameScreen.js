@@ -14,6 +14,8 @@ class GameScreen extends Component {
       questionIndex: 0,
       actualQuestion: {},
       haveOptions: false,
+      correctStyle: '',
+      incorrectStyle: '',
     };
   }
 
@@ -42,25 +44,39 @@ class GameScreen extends Component {
     }, () => shuffleOptions());
   }
 
-  renderOptions = ({ correct_answer: correct, incorrect_answers: incorrect }) => (
-    <div id="options" data-testid="answer-options">
-      <button
-        key={ decodeCharacter(correct) }
-        type="button"
-        data-testid="correct-answer"
-      >
-        {decodeCharacter(correct)}
-      </button>
-      {incorrect.map((each, i) => (
+  answerClicked = () => {
+    this.setState({
+      correctStyle: '3px solid rgb(6, 240, 15)',
+      incorrectStyle: '3px solid rgb(255, 0, 0)',
+    });
+  }
+
+  renderOptions = ({ correct_answer: correct, incorrect_answers: incorrect }) => {
+    const { correctStyle, incorrectStyle } = this.state;
+    return (
+      <div id="options" data-testid="answer-options">
         <button
-          key={ decodeCharacter(each) }
+          key={ decodeCharacter(correct) }
           type="button"
-          data-testid={ `wrong-answer-${i}` }
+          style={ ({ border: correctStyle }) }
+          data-testid="correct-answer"
+          onClick={ () => this.answerClicked() }
         >
-          { decodeCharacter(each) }
+          {decodeCharacter(correct)}
         </button>
-      ))}
-    </div>);
+        {incorrect.map((each, i) => (
+          <button
+            key={ decodeCharacter(each) }
+            type="button"
+            data-testid={ `wrong-answer-${i}` }
+            style={ ({ border: incorrectStyle }) }
+            onClick={ () => this.answerClicked() }
+          >
+            {decodeCharacter(each)}
+          </button>
+        ))}
+      </div>);
+  };
 
   render() {
     const { actualQuestion, haveOptions } = this.state;
