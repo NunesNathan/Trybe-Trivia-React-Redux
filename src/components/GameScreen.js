@@ -49,7 +49,7 @@ class GameScreen extends Component {
   disabledButtons = () => {
     this.setState({ disabledButton: true });
   }
-  
+
   answerClicked = () => {
     this.setState({
       correctStyle: '3px solid rgb(6, 240, 15)',
