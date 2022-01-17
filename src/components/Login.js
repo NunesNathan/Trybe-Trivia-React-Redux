@@ -43,8 +43,7 @@ class Login extends Component {
     const { dispatch, history } = this.props;
     const { email, name } = this.state;
     dispatch(addUser({ email, name }));
-    dispatch(await fetchAPIToken());
-    history.push('/game');
+    dispatch(await fetchAPIToken(history));
   }
 
   submitSettings = () => {
