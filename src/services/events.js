@@ -9,10 +9,13 @@ export const decodeCharacter = (string) => {
   }
   return (decodeURI(string)
     .replace(/&quot;|&#039;/g, '\'')
-    .replace(/&ldquo;|&rdquo;/g, /"/)
+    .replace(/&ldquo;|&rdquo;/g, '"')
     .replace(/&amp;/g, '&')
     .replace(/&eacute;/g, 'é')
+    .replace(/&rsquo;/g, '’')
+    .replace(/&lsquo;/g, '‘')
     .replace(/&shy;/g, '-')
+    .replace(/&pi;/g, 'π')
     .replace(/&prime;/g, '′')
     .replace(/&Prime;/g, '″'));
 };
