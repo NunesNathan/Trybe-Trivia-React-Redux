@@ -8,10 +8,11 @@ export const decodeCharacter = (string) => {
     return string;
   }
   return (decodeURI(string)
-    .replace(/&quot;|&#039;/gi, '\'')
+    .replace(/&quot;|&#039;/g, '\'')
     .replace(/&ldquo;|&rdquo;/g, /"/)
-    .replace(/&amp;/g, /&/)
+    .replace(/&amp;/g, '&')
     .replace(/&eacute;/g, 'é')
+    .replace(/&shy;/g, '-')
     .replace(/&prime;/g, '′')
     .replace(/&Prime;/g, '″'));
 };

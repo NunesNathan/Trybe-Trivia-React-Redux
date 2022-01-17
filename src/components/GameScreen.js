@@ -12,7 +12,7 @@ class GameScreen extends Component {
     this.state = {
       questions: [],
       questionIndex: 0,
-      actualQuestion: false,
+      actualQuestion: {},
       haveOptions: false,
     };
   }
@@ -76,7 +76,7 @@ class GameScreen extends Component {
               >
                 {decodeCharacter(actualQuestion.question)}
               </p>
-              { haveOptions && this.renderOptions(actualQuestion) }
+              { this.renderOptions(actualQuestion) }
             </div>)}
       </main>
     );
