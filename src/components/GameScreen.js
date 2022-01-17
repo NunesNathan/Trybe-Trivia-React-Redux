@@ -15,6 +15,8 @@ class GameScreen extends Component {
       actualQuestion: {},
       haveOptions: false,
       disabledButton: false,
+      correctStyle: '',
+      incorrectStyle: '',
     };
   }
 
@@ -47,29 +49,40 @@ class GameScreen extends Component {
   disabledButtons = () => {
     this.setState({ disabledButton: true });
   }
+  
+  answerClicked = () => {
+    this.setState({
+      correctStyle: '3px solid rgb(6, 240, 15)',
+      incorrectStyle: '3px solid rgb(255, 0, 0)',
+    });
+  }
 
   renderOptions = ({ correct_answer: correct, incorrect_answers: incorrect }) => {
-    const { disabledButton } = this.state;
+    const { correctStyle, incorrectStyle, disabledButton } = this.state;
     return (
       <div id="options" data-testid="answer-options">
         <button
           key={ decodeCharacter(correct) }
           type="button"
           disabled={ disabledButton }
+          style={ ({ border: correctStyle }) }
           data-testid="correct-answer"
+          onClick={ () => this.answerClicked() }
         >
-          { decodeCharacter(correct) }
+          {decodeCharacter(correct)}
         </button>
-        { incorrect.map((each, i) => (
+        {incorrect.map((each, i) => (
           <button
             key={ decodeCharacter(each) }
             type="button"
             disabled={ disabledButton }
+            style={ ({ border: incorrectStyle }) }
             data-testid={ `wrong-answer-${i}` }
+            onClick={ () => this.answerClicked() }
           >
-            { decodeCharacter(each) }
+            {decodeCharacter(each)}
           </button>
-        )) }
+        ))}
       </div>);
   };
 
