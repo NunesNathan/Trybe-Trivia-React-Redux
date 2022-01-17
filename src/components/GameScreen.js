@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchQuestions } from '../services/tokenAPI';
-import { decodeCharacter, shuffleOptions } from '../services/events';
+import { decodeCharacter, shuffleOptions, timerSeconds } from '../services/events';
 import { fetchAPIToken } from '../redux/actions';
 
 class GameScreen extends Component {
@@ -14,6 +14,7 @@ class GameScreen extends Component {
       questionIndex: 0,
       actualQuestion: {},
       haveOptions: false,
+      disabledButton: false,
       correctStyle: '',
       incorrectStyle: '',
     };
@@ -21,6 +22,7 @@ class GameScreen extends Component {
 
   componentDidMount() {
     this.getQuestions();
+    timerSeconds(this.disabledButtons);
   }
 
   getQuestions = async () => {
@@ -44,6 +46,10 @@ class GameScreen extends Component {
     }, () => shuffleOptions());
   }
 
+  disabledButtons = () => {
+    this.setState({ disabledButton: true });
+  }
+
   answerClicked = () => {
     this.setState({
       correctStyle: '3px solid rgb(6, 240, 15)',
@@ -52,12 +58,13 @@ class GameScreen extends Component {
   }
 
   renderOptions = ({ correct_answer: correct, incorrect_answers: incorrect }) => {
-    const { correctStyle, incorrectStyle } = this.state;
+    const { correctStyle, incorrectStyle, disabledButton } = this.state;
     return (
       <div id="options" data-testid="answer-options">
         <button
           key={ decodeCharacter(correct) }
           type="button"
+          disabled={ disabledButton }
           style={ ({ border: correctStyle }) }
           data-testid="correct-answer"
           onClick={ () => this.answerClicked() }
@@ -68,8 +75,9 @@ class GameScreen extends Component {
           <button
             key={ decodeCharacter(each) }
             type="button"
-            data-testid={ `wrong-answer-${i}` }
+            disabled={ disabledButton }
             style={ ({ border: incorrectStyle }) }
+            data-testid={ `wrong-answer-${i}` }
             onClick={ () => this.answerClicked() }
           >
             {decodeCharacter(each)}
@@ -82,7 +90,7 @@ class GameScreen extends Component {
     const { actualQuestion, haveOptions } = this.state;
     return (
       <main>
-        {!haveOptions
+        { !haveOptions
           ? (<p>Carregando</p>)
           : (
             <div>
@@ -90,10 +98,10 @@ class GameScreen extends Component {
               <p
                 data-testid="question-text"
               >
-                {decodeCharacter(actualQuestion.question)}
+                { decodeCharacter(actualQuestion.question) }
               </p>
               { this.renderOptions(actualQuestion) }
-            </div>)}
+            </div>) }
       </main>
     );
   }
