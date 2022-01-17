@@ -27,3 +27,14 @@ export const shuffleOptions = () => {
     options.append(options.children[Math.floor(Math.random() * index)]);
   }
 };
+
+export function countDown() {
+  const elementeTimer = document.getElementById('count-down-timer');
+
+  if (elementeTimer.innerHTML > 0) {
+    elementeTimer.innerHTML -= 1;
+  }
+}
+
+const milesimos = 1000;
+export const timerSeconds = () => setInterval(countDown, milesimos);
