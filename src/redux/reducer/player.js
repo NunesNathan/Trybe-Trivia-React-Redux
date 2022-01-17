@@ -12,7 +12,7 @@ const player = (state = initialState, { type, payload }) => {
   case ADD_USER:
     return { ...state, name: payload.name, gravatarEmail: payload.email };
   case MAKE_SCORE:
-    return { ...state, assertions: payload.assertions, score: payload.score };
+    return { ...state, score: payload, assertions: state.assertions + 1 };
   case PLAY_AGAIN:
     return { ...initialState };
 
