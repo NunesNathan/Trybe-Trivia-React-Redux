@@ -14,6 +14,7 @@ class GameScreen extends Component {
       questionIndex: 0,
       actualQuestion: {},
       haveOptions: false,
+      haveAnswer: false,
     };
   }
 
@@ -42,12 +43,19 @@ class GameScreen extends Component {
     }, () => shuffleOptions());
   }
 
+  answerClicked = () => {
+    this.setState({
+      haveAnswer: true,
+    });
+  }
+
   renderOptions = ({ correct_answer: correct, incorrect_answers: incorrect }) => (
     <div id="options" data-testid="answer-options">
       <button
         key={ decodeCharacter(correct) }
         type="button"
         data-testid="correct-answer"
+        onClick={ () => this.answerClicked() }
       >
         {decodeCharacter(correct)}
       </button>
@@ -56,14 +64,23 @@ class GameScreen extends Component {
           key={ decodeCharacter(each) }
           type="button"
           data-testid={ `wrong-answer-${i}` }
+          onClick={ () => this.answerClicked() }
         >
           { decodeCharacter(each) }
         </button>
       ))}
     </div>);
 
+  nextQuestion = () => {
+    const { questionIndex } = this.state;
+    this.setState({
+      questionIndex: questionIndex + 1,
+      haveAnswer: false,
+    }, () => this.renderQuestion());
+  }
+
   render() {
-    const { actualQuestion, haveOptions } = this.state;
+    const { actualQuestion, haveOptions, haveAnswer } = this.state;
     return (
       <main>
         {!haveOptions
@@ -78,6 +95,16 @@ class GameScreen extends Component {
               </p>
               { this.renderOptions(actualQuestion) }
             </div>)}
+        {haveAnswer
+          && (
+            <button
+              type="button"
+              data-testid="btn-next"
+              onClick={ this.nextQuestion }
+            >
+              Next
+            </button>
+          )}
       </main>
     );
   }
