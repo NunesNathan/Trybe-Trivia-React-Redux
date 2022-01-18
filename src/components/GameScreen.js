@@ -8,7 +8,8 @@ import {
   timerSeconds } from '../services/events';
 import { fetchAPIToken, makeScore } from '../redux/actions';
 import calculatePoints from '../helpers/score';
-import setLocalStorage from '../services/localStorage';
+import { getLocalStorage, setNewRanking } from '../services/localStorage';
+import getGravatarUrl from '../services/gravatar';
 
 class GameScreen extends Component {
   constructor() {
@@ -30,8 +31,13 @@ class GameScreen extends Component {
     this.getQuestions();
   }
 
+  componentWillUnmount() {
+    const { id } = this.state;
+    clearInterval(id);
+  }
+
   getQuestions = async () => {
-    const { token, dispatch } = this.props;
+    const { token, dispatch, history } = this.props;
     const questions = await fetchQuestions(token);
     if (questions.response_code === 0) {
       this.setState({
@@ -40,7 +46,7 @@ class GameScreen extends Component {
       }, () => this.renderQuestion());
     } else {
       dispatch(await fetchAPIToken());
-      await this.getQuestions();
+      await this.getQuestions(history);
     }
   }
 
@@ -69,7 +75,6 @@ class GameScreen extends Component {
       const newScore = score + points;
 
       dispatch(makeScore(newScore));
-      setLocalStorage('ranking', { score: newScore });
     }
   }
 
@@ -115,7 +120,7 @@ class GameScreen extends Component {
 
   nextQuestion = () => {
     const { questionIndex, questions, id } = this.state;
-    const { history } = this.props;
+    const { history, score, name } = this.props;
     clearInterval(id);
     if (questionIndex < (questions.length - 1)) {
       overrideTime();
@@ -128,6 +133,8 @@ class GameScreen extends Component {
         disabledButton: false,
       }, () => this.renderQuestion());
     } else {
+      const record = { name, score, picture: getGravatarUrl(getLocalStorage('token')) };
+      setNewRanking(record);
       history.push('/feedback');
     }
   }
@@ -165,6 +172,7 @@ class GameScreen extends Component {
 
 GameScreen.propTypes = {
   token: PropType.string.isRequired,
+  name: PropType.string.isRequired,
   dispatch: PropType.func.isRequired,
   history: PropType.func.isRequired,
   score: PropType.number.isRequired,
@@ -174,6 +182,7 @@ const mapStateToProps = (state) => ({
   token: state.token,
   assertions: state.player.assertions,
   score: state.player.score,
+  name: state.player.name,
 });
 
 export default connect(mapStateToProps)(GameScreen);
