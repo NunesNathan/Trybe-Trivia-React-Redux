@@ -28,17 +28,31 @@ export const shuffleOptions = () => {
   }
 };
 
-export function countDown(disabledButtons) {
+export function getTimer() {
   const elementeTimer = document.getElementById('count-down-timer');
+  return elementeTimer;
+}
 
-  if (elementeTimer.innerHTML > 0) {
-    elementeTimer.innerHTML -= 1;
+const inicialTime = 30;
+export function overrideTime(time = inicialTime) {
+  const elementeTimer = getTimer();
+  if (time === inicialTime) {
+    elementeTimer.innerHTML = time;
+  } else {
+    elementeTimer.innerHTML -= time;
+  }
+}
+
+export function countDown(disabledButtons) {
+  const timer = getTimer();
+  if (timer.innerHTML > 0) {
+    overrideTime(1);
   } else {
     disabledButtons();
   }
 }
 
-const milesimos = 1000;
+const ms = 1000;
 export const timerSeconds = (disabledButtons) => setInterval(
-  () => countDown(disabledButtons), milesimos,
+  () => countDown(disabledButtons), ms,
 );
