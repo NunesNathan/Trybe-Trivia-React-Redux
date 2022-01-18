@@ -11,6 +11,11 @@ export default class Feedback extends Component {
     history.push('/');
   }
 
+  ranking = () => {
+    const { history } = this.props;
+    history.push('/ranking');
+  }
+
   render() {
     return (
       <>
@@ -21,6 +26,12 @@ export default class Feedback extends Component {
           text="Play Again"
           test="play-again"
           onClick={ this.playAgain }
+          disabled={ false }
+        />
+        <Button
+          text="Ranking"
+          test="ranking"
+          onClick={ this.ranking }
           disabled={ false }
         />
       </>
