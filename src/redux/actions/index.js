@@ -1,4 +1,4 @@
-import setLocalStorage from '../../services/localStorage';
+import { setLocalStorage } from '../../services/localStorage';
 import { fetchAPI } from '../../services/tokenAPI';
 
 // action types
