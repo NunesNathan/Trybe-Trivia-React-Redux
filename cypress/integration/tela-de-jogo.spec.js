@@ -210,7 +210,7 @@ describe('9 - [TELA DE JOGO] Crie o placar com as seguintes características:', 
     cy.get(HEADER_SCORE_SELECTOR);
   });
 
-   it('Será validado se os pontos são somados ao acertar uma questão', () => {
+  it('Será validado se os pontos são somados ao acertar uma questão', () => {
     let lastScore;
     cy.window().its('store').invoke('getState').then((state) => {
       lastScore = state.player.score;
