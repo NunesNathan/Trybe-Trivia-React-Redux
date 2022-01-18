@@ -3,7 +3,9 @@ import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchQuestions } from '../services/tokenAPI';
 import { decodeCharacter, shuffleOptions, timerSeconds } from '../services/events';
-import { fetchAPIToken } from '../redux/actions';
+import { fetchAPIToken, makeScore } from '../redux/actions';
+import calculatePoints from '../helpers/score';
+import setLocalStorage from '../services/localStorage';
 
 class GameScreen extends Component {
   constructor() {
@@ -14,6 +16,7 @@ class GameScreen extends Component {
       questionIndex: 0,
       actualQuestion: {},
       haveOptions: false,
+      haveAnswer: false,
       disabledButton: false,
       correctStyle: '',
       incorrectStyle: '',
@@ -46,15 +49,28 @@ class GameScreen extends Component {
     }, () => shuffleOptions());
   }
 
-  disabledButtons = () => {
-    this.setState({ disabledButton: true });
-  }
-  
-  answerClicked = () => {
+  answerClicked = (boll) => {
+    const { dispatch, score } = this.props;
+
     this.setState({
+      haveAnswer: true,
       correctStyle: '3px solid rgb(6, 240, 15)',
       incorrectStyle: '3px solid rgb(255, 0, 0)',
     });
+
+    if (boll === true) {
+      const { actualQuestion: { difficulty } } = this.state;
+      const time = 30;
+      const points = calculatePoints(difficulty, time);
+      const newScore = score + points;
+
+      dispatch(makeScore(newScore));
+      setLocalStorage('ranking', { score: newScore });
+    }
+  }
+
+  disabledButtons = () => {
+    this.setState({ disabledButton: true });
   }
 
   renderOptions = ({ correct_answer: correct, incorrect_answers: incorrect }) => {
@@ -67,27 +83,35 @@ class GameScreen extends Component {
           disabled={ disabledButton }
           style={ ({ border: correctStyle }) }
           data-testid="correct-answer"
-          onClick={ () => this.answerClicked() }
+          onClick={ () => this.answerClicked(true) }
         >
-          {decodeCharacter(correct)}
+          { decodeCharacter(correct) }
         </button>
-        {incorrect.map((each, i) => (
+        { incorrect.map((each, i) => (
           <button
             key={ decodeCharacter(each) }
             type="button"
             disabled={ disabledButton }
             style={ ({ border: incorrectStyle }) }
             data-testid={ `wrong-answer-${i}` }
-            onClick={ () => this.answerClicked() }
+            onClick={ () => this.answerClicked(false) }
           >
-            {decodeCharacter(each)}
+            { decodeCharacter(each) }
           </button>
-        ))}
+        )) }
       </div>);
   };
 
+  nextQuestion = () => {
+    const { questionIndex } = this.state;
+    this.setState({
+      questionIndex: questionIndex + 1,
+      haveAnswer: false,
+    }, () => this.renderQuestion());
+  }
+
   render() {
-    const { actualQuestion, haveOptions } = this.state;
+    const { actualQuestion, haveOptions, haveAnswer } = this.state;
     return (
       <main>
         { !haveOptions
@@ -101,7 +125,17 @@ class GameScreen extends Component {
                 { decodeCharacter(actualQuestion.question) }
               </p>
               { this.renderOptions(actualQuestion) }
-            </div>) }
+            </div>)}
+        {haveAnswer
+          && (
+            <button
+              type="button"
+              data-testid="btn-next"
+              onClick={ this.nextQuestion }
+            >
+              Next
+            </button>
+          )}
       </main>
     );
   }
@@ -110,10 +144,13 @@ class GameScreen extends Component {
 GameScreen.propTypes = {
   token: PropType.string.isRequired,
   dispatch: PropType.func.isRequired,
+  score: PropType.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   token: state.token,
+  assertions: state.player.assertions,
+  score: state.player.score,
 });
 
 export default connect(mapStateToProps)(GameScreen);
