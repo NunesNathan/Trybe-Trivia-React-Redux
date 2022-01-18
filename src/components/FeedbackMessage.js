@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropType from 'prop-types';
 
-const PARAM_SCORE = 3;
+const PARAM_ASSERTIONS = 3;
 
 class FeedbackMessage extends Component {
   render() {
-    const { score } = this.props;
+    const { assertions } = this.props;
     return (
       <div>
-        {score > PARAM_SCORE
+        {assertions < PARAM_ASSERTIONS
           ? <h1 data-testid="feedback-text">Could be better...</h1>
           : <h1 data-testid="feedback-text">Well Done!</h1>}
       </div>
@@ -18,11 +18,11 @@ class FeedbackMessage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  score: state.player.score,
+  assertions: state.player.assertions,
 });
 
 FeedbackMessage.propTypes = {
-  score: PropType.number.isRequired,
+  assertions: PropType.number.isRequired,
 };
 
 export default connect(mapStateToProps)(FeedbackMessage);
