@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchQuestions } from '../services/tokenAPI';
-import { decodeCharacter, shuffleOptions, timerSeconds } from '../services/events';
+import {
+  decodeCharacter,
+  overrideTime, shuffleOptions,
+  timerSeconds } from '../services/events';
 import { fetchAPIToken, makeScore } from '../redux/actions';
 import calculatePoints from '../helpers/score';
 import setLocalStorage from '../services/localStorage';
@@ -75,6 +78,7 @@ class GameScreen extends Component {
 
   renderOptions = ({ correct_answer: correct, incorrect_answers: incorrect }) => {
     const { correctStyle, incorrectStyle, disabledButton } = this.state;
+    overrideTime();
     return (
       <div id="options" data-testid="answer-options">
         <button
@@ -103,11 +107,18 @@ class GameScreen extends Component {
   };
 
   nextQuestion = () => {
-    const { questionIndex } = this.state;
-    this.setState({
-      questionIndex: questionIndex + 1,
-      haveAnswer: false,
-    }, () => this.renderQuestion());
+    const { questionIndex, questions } = this.state;
+    const { history } = this.props;
+    if (questionIndex < (questions.length - 1)) {
+      this.setState({
+        questionIndex: questionIndex + 1,
+        haveAnswer: false,
+        correctStyle: '',
+        incorrectStyle: '',
+      }, () => this.renderQuestion());
+    } else {
+      history.push('/feedback');
+    }
   }
 
   render() {
@@ -144,6 +155,7 @@ class GameScreen extends Component {
 GameScreen.propTypes = {
   token: PropType.string.isRequired,
   dispatch: PropType.func.isRequired,
+  history: PropType.func.isRequired,
   score: PropType.number.isRequired,
 };
 
