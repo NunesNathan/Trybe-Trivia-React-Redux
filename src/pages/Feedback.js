@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import Header from '../components/Header';
 
 export default class Feedback extends Component {
   render() {
     return (
-      <p data-testid="feedback-text">Boa, amigão!</p>
+      <Header />
     );
   }
 }
