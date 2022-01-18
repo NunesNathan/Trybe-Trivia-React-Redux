@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchQuestions } from '../services/tokenAPI';
-import { decodeCharacter, shuffleOptions } from '../services/events';
+import { decodeCharacter, shuffleOptions, timerSeconds } from '../services/events';
 import { fetchAPIToken, makeScore } from '../redux/actions';
 import calculatePoints from '../helpers/score';
 import setLocalStorage from '../services/localStorage';
@@ -67,6 +67,10 @@ class GameScreen extends Component {
     }
   }
 
+  disabledButtons = () => {
+    this.setState({ disabledButton: true });
+  }
+
   renderOptions = ({ correct_answer: correct, incorrect_answers: incorrect }) => {
     const { correctStyle, incorrectStyle, disabledButton } = this.state;
     return (
@@ -79,19 +83,20 @@ class GameScreen extends Component {
           data-testid="correct-answer"
           onClick={ () => this.answerClicked(true) }
         >
-          {decodeCharacter(correct)}
+          { decodeCharacter(correct) }
         </button>
-        {incorrect.map((each, i) => (
+        { incorrect.map((each, i) => (
           <button
             key={ decodeCharacter(each) }
             type="button"
             disabled={ disabledButton }
             style={ ({ border: incorrectStyle }) }
+            data-testid={ `wrong-answer-${i}` }
             onClick={ () => this.answerClicked(false) }
           >
-            {decodeCharacter(each)}
+            { decodeCharacter(each) }
           </button>
-        ))}
+        )) }
       </div>);
   };
 
