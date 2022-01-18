@@ -28,7 +28,6 @@ class GameScreen extends Component {
 
   componentDidMount() {
     this.getQuestions();
-    timerSeconds(this.disabledButtons);
   }
 
   getQuestions = async () => {
@@ -37,6 +36,7 @@ class GameScreen extends Component {
     if (questions.response_code === 0) {
       this.setState({
         questions: questions.results,
+        id: timerSeconds(this.disabledButtons),
       }, () => this.renderQuestion());
     } else {
       dispatch(await fetchAPIToken());
@@ -53,8 +53,9 @@ class GameScreen extends Component {
   }
 
   answerClicked = (boll) => {
+    const { id } = this.state;
     const { dispatch, score } = this.props;
-
+    clearInterval(id);
     this.setState({
       haveAnswer: true,
       correctStyle: '3px solid rgb(6, 240, 15)',
@@ -73,12 +74,18 @@ class GameScreen extends Component {
   }
 
   disabledButtons = () => {
-    this.setState({ disabledButton: true });
+    const { id } = this.state;
+    this.setState({
+      disabledButton: true,
+      haveAnswer: true,
+      correctStyle: '3px solid rgb(6, 240, 15)',
+      incorrectStyle: '3px solid rgb(255, 0, 0)',
+    });
+    clearInterval(id);
   }
 
   renderOptions = ({ correct_answer: correct, incorrect_answers: incorrect }) => {
     const { correctStyle, incorrectStyle, disabledButton } = this.state;
-    overrideTime();
     return (
       <div id="options" data-testid="answer-options">
         <button
@@ -107,14 +114,18 @@ class GameScreen extends Component {
   };
 
   nextQuestion = () => {
-    const { questionIndex, questions } = this.state;
+    const { questionIndex, questions, id } = this.state;
     const { history } = this.props;
+    clearInterval(id);
     if (questionIndex < (questions.length - 1)) {
+      overrideTime();
       this.setState({
+        id: timerSeconds(this.disabledButtons),
         questionIndex: questionIndex + 1,
         haveAnswer: false,
         correctStyle: '',
         incorrectStyle: '',
+        disabledButton: false,
       }, () => this.renderQuestion());
     } else {
       history.push('/feedback');
