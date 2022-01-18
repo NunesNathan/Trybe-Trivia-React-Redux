@@ -7,11 +7,17 @@ class FeedbackInfo extends Component {
     const { assertions, score } = this.props;
     return (
       <div>
-        <p data-testid="feedback-total-question">
-          {`You got ${assertions} questions right!`}
+        <p>
+          You got
+          <span data-testid="feedback-total-question">
+            { assertions }
+          </span>
+          questions right!
         </p>
-        <p data-testid="feedback-total-score">
-          {`Totaling ${score} points`}
+        <p>
+          Totaling
+          <span data-testid="feedback-total-score">{ score }</span>
+          points
         </p>
       </div>
     );
