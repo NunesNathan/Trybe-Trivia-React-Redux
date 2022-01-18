@@ -16,6 +16,7 @@ class GameScreen extends Component {
       questionIndex: 0,
       actualQuestion: {},
       haveOptions: false,
+      haveAnswer: false,
       disabledButton: false,
       correctStyle: '',
       incorrectStyle: '',
@@ -52,6 +53,7 @@ class GameScreen extends Component {
     const { dispatch, score } = this.props;
 
     this.setState({
+      haveAnswer: true,
       correctStyle: '3px solid rgb(6, 240, 15)',
       incorrectStyle: '3px solid rgb(255, 0, 0)',
     });
@@ -100,8 +102,16 @@ class GameScreen extends Component {
       </div>);
   };
 
+  nextQuestion = () => {
+    const { questionIndex } = this.state;
+    this.setState({
+      questionIndex: questionIndex + 1,
+      haveAnswer: false,
+    }, () => this.renderQuestion());
+  }
+
   render() {
-    const { actualQuestion, haveOptions } = this.state;
+    const { actualQuestion, haveOptions, haveAnswer } = this.state;
     return (
       <main>
         { !haveOptions
@@ -115,7 +125,17 @@ class GameScreen extends Component {
                 { decodeCharacter(actualQuestion.question) }
               </p>
               { this.renderOptions(actualQuestion) }
-            </div>) }
+            </div>)}
+        {haveAnswer
+          && (
+            <button
+              type="button"
+              data-testid="btn-next"
+              onClick={ this.nextQuestion }
+            >
+              Next
+            </button>
+          )}
       </main>
     );
   }
