@@ -24,13 +24,13 @@ export default class Feedback extends Component {
         <FeedbackInfo />
         <Button
           text="Play Again"
-          test="play-again"
+          test="btn-play-again"
           onClick={ this.playAgain }
           disabled={ false }
         />
         <Button
           text="Ranking"
-          test="ranking"
+          test="btn-ranking"
           onClick={ this.ranking }
           disabled={ false }
         />
