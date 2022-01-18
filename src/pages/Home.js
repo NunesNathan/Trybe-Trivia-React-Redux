@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropType from 'prop-types';
 import Logo from '../components/Logo';
 import Login from '../components/Login';
 
@@ -13,7 +13,7 @@ export default function Home({ history }) {
 }
 
 Home.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
+  history: PropType.shape({
+    push: PropType.func.isRequired,
   }).isRequired,
 };

@@ -14,6 +14,7 @@ export const decodeCharacter = (string) => {
     .replace(/&eacute;/g, 'é')
     .replace(/&rsquo;/g, '’')
     .replace(/&lsquo;/g, '‘')
+    .replace(/&deg;/g, '°')
     .replace(/&shy;/g, '-')
     .replace(/&pi;/g, 'π')
     .replace(/&prime;/g, '′')

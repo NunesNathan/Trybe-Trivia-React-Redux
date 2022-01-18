@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchQuestions } from '../services/tokenAPI';
-import {
-  decodeCharacter,
-  overrideTime, shuffleOptions,
-  timerSeconds } from '../services/events';
 import { fetchAPIToken, makeScore } from '../redux/actions';
-import calculatePoints from '../helpers/score';
-import { getLocalStorage, setNewRanking } from '../services/localStorage';
+import { fetchQuestions } from '../services/tokenAPI';
+import { decodeCharacter, overrideTime,
+  shuffleOptions, timerSeconds } from '../services/events';
+import { setNewRanking } from '../services/localStorage';
 import getGravatarUrl from '../services/gravatar';
+import calculatePoints from '../helpers/score';
+import Button from './Button';
 
 class GameScreen extends Component {
   constructor() {
@@ -93,34 +92,29 @@ class GameScreen extends Component {
     const { correctStyle, incorrectStyle, disabledButton } = this.state;
     return (
       <div id="options" data-testid="answer-options">
-        <button
-          key={ decodeCharacter(correct) }
-          type="button"
+        <Button
+          text={ decodeCharacter(correct) }
+          test="correct-answer"
+          style={ { border: correctStyle } }
           disabled={ disabledButton }
-          style={ ({ border: correctStyle }) }
-          data-testid="correct-answer"
           onClick={ () => this.answerClicked(true) }
-        >
-          { decodeCharacter(correct) }
-        </button>
+        />
         { incorrect.map((each, i) => (
-          <button
+          <Button
             key={ decodeCharacter(each) }
-            type="button"
+            text={ decodeCharacter(each) }
+            test={ `wrong-answer-${i}` }
+            style={ { border: incorrectStyle } }
             disabled={ disabledButton }
-            style={ ({ border: incorrectStyle }) }
-            data-testid={ `wrong-answer-${i}` }
             onClick={ () => this.answerClicked(false) }
-          >
-            { decodeCharacter(each) }
-          </button>
+          />
         )) }
       </div>);
   };
 
   nextQuestion = () => {
     const { questionIndex, questions, id } = this.state;
-    const { history, score, name } = this.props;
+    const { history, score, name, email } = this.props;
     clearInterval(id);
     if (questionIndex < (questions.length - 1)) {
       overrideTime();
@@ -133,7 +127,7 @@ class GameScreen extends Component {
         disabledButton: false,
       }, () => this.renderQuestion());
     } else {
-      const record = { name, score, picture: getGravatarUrl(getLocalStorage('token')) };
+      const record = { name, score, picture: getGravatarUrl(email) };
       setNewRanking(record);
       history.push('/feedback');
     }
@@ -157,13 +151,11 @@ class GameScreen extends Component {
             </div>)}
         {haveAnswer
           && (
-            <button
-              type="button"
-              data-testid="btn-next"
+            <Button
+              text="Next"
+              test="btn-next"
               onClick={ this.nextQuestion }
-            >
-              Next
-            </button>
+            />
           )}
       </main>
     );
@@ -173,8 +165,11 @@ class GameScreen extends Component {
 GameScreen.propTypes = {
   token: PropType.string.isRequired,
   name: PropType.string.isRequired,
+  email: PropType.string.isRequired,
   dispatch: PropType.func.isRequired,
-  history: PropType.func.isRequired,
+  history: PropType.shape({
+    push: PropType.func,
+  }).isRequired,
   score: PropType.number.isRequired,
 };
 
@@ -183,6 +178,7 @@ const mapStateToProps = (state) => ({
   assertions: state.player.assertions,
   score: state.player.score,
   name: state.player.name,
+  email: state.player.gravatarEmail,
 });
 
 export default connect(mapStateToProps)(GameScreen);

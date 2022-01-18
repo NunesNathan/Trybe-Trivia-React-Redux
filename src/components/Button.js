@@ -6,10 +6,10 @@ class Button extends React.Component {
     const { text, test, style, onClick, disabled } = this.props;
     return (
       <button
-        data-testid={ `btn-${test}` }
-        style={ style }
+        data-testid={ `${test}` }
         type="button"
         disabled={ disabled }
+        style={ style }
         onClick={ onClick }
       >
         {text}
@@ -24,12 +24,13 @@ Button.propTypes = {
   style: PropType.shape({
     border: PropType.string,
   }),
-  disabled: PropType.bool.isRequired,
+  disabled: PropType.bool,
   onClick: PropType.func.isRequired,
 };
 
 Button.defaultProps = {
   style: { border: '' },
+  disabled: false,
 };
 
 export default Button;

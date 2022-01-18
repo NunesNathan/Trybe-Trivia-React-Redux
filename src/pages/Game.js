@@ -18,7 +18,9 @@ class Game extends Component {
 }
 
 Game.propTypes = {
-  history: PropType.func.isRequired,
+  history: PropType.shape({
+    push: PropType.func,
+  }).isRequired,
 };
 
 export default Game;
