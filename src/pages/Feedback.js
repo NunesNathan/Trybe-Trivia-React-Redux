@@ -40,5 +40,7 @@ export default class Feedback extends Component {
 }
 
 Feedback.propTypes = {
-  history: PropType.func.isRequired,
+  history: PropType.shape({
+    push: PropType.func,
+  }).isRequired,
 };
